@@ -1,6 +1,8 @@
 task.pdf
 .env
-.env.*.local
+.env.*
+!.env.dev.example
+!.env.second-host.example
 __pycache__/
 .pytest_cache/
 .venv/

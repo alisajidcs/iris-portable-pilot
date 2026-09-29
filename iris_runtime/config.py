@@ -22,11 +22,6 @@ class Settings:
 
     @property
     def database_url(self) -> str:
-        from urllib.parse import quote
-        return f"postgresql://{quote(self.db_user, safe='')}:{quote(self.db_password, safe='')}@{self.db_host}:{self.db_port}/{self.db_name}"
-
-    @property
-    def database_url(self) -> str:
         user = quote(self.db_user, safe="")
         password = quote(self.db_password, safe="")
         return f"postgresql://{user}:{password}@{self.db_host}:{self.db_port}/{self.db_name}"

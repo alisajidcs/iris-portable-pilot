@@ -18,7 +18,7 @@ cp .env.dev.example .env
 make smoke
 ```
 
-The `db` service reports healthy after PostgreSQL accepts connections and PostGIS is installed. The `migrate` service applies lexically ordered SQL files with `ON_ERROR_STOP`; the worker starts only after migrations complete successfully. The smoke command runs the worker and checks the output summary, PostGIS availability, and country-scoped row count.
+The `db` service reports healthy after PostgreSQL accepts connections and PostGIS is installed. The `migrate` service applies lexically ordered SQL files with `ON_ERROR_STOP`; the worker starts only after migrations complete successfully. The smoke command runs the worker and checks that the summary matches configuration and that the database contains exactly the fixture records, with expected geometry types, SRID, and missing-geometry behavior.
 
 To use a second-host configuration, copy it to Compose's standard `.env` file:
 
@@ -30,7 +30,7 @@ make smoke
 
 The `.env` file is ignored by Git. Compose passes database credentials at runtime; the image contains no secrets. The sample passwords are placeholders and should be replaced before use. `OUTPUT_PATH` selects the worker's destination inside the container, and `HOST_OUTPUT_PATH` selects the host directory mounted there.
 
-## Useful commands
+## Tests and useful commands
 
 ```sh
 docker compose up -d db
@@ -39,6 +39,8 @@ docker compose run --rm worker iris-smoke
 python -m pip install -e '.[test]'
 python -m pytest
 ```
+
+The automated tests cover configuration validation, fixture path safety, source-record validation, and nullable geometry SQL. `make smoke` is the end-to-end check and requires Docker Compose.
 
 The stack keeps the database in the named `postgres-data` volume. `docker compose down` stops services while preserving data. To intentionally reset this local pilot database, use `docker compose down --volumes`.
 
