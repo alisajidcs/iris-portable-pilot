@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iris-pilot-runtime"
+version = "0.1.0"
+description = "Portable Dockerized IRIS pilot runtime"
+requires-python = ">=3.12"
+dependencies = ["psycopg[binary]>=3.2,<4"]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0,<9"]
+
+[project.scripts]
+iris-worker = "iris_runtime.worker:main"
+iris-smoke = "iris_runtime.smoke:main"
+
+[tool.setuptools.packages.find]
+include = ["iris_runtime*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

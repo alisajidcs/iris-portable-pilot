@@ -1,1 +1,8 @@
 task.pdf
+.env
+.env.*.local
+__pycache__/
+.pytest_cache/
+.venv/
+output/
+*.egg-info/
