@@ -28,8 +28,8 @@ def main() -> None:
     expected_ids = sorted(record["record_id"] for record in expected_records)
     with psycopg.connect(settings.database_url) as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT postgis_full_version()")
-            postgis_version = cur.fetchone()[0]
+            cur.execute("SELECT PostGIS_Full_Version(), version()")
+            postgis_full_version, postgres_full_version = cur.fetchone()
             cur.execute(
                 """SELECT record_id, country_code, ST_SRID(geom), ST_GeometryType(geom)
                    FROM pilot_feature WHERE country_code = %s AND region_code = %s
@@ -53,7 +53,12 @@ def main() -> None:
     count = len(rows)
     if summary.get("feature_count") != count:
         raise SystemExit(f"Smoke check failed: summary reports {summary.get('feature_count')}, database has {count}")
-    print(f"Smoke check passed for {settings.country_code}/{settings.region_code}: {count} fixture records; {postgis_version}")
+    postgis_version = postgis_full_version.split()[0].split("=", 1)[-1]
+    postgres_version = postgres_full_version.split()[1]
+    print("Smoke check passed")
+    print(f"  Region:   {settings.country_code}/{settings.region_code}")
+    print(f"  Records:  {count} fixture records verified")
+    print(f"  Database: PostgreSQL {postgres_version} with PostGIS {postgis_version}")
 
 
 if __name__ == "__main__":
